@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Executivo de Projetos | Simus ERP</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js para Gráfico de Rosca Interativo -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ===== 1. VARIÁVEIS E ESTILOS BASE ===== */
+        :root {
+            --ink: #1A2230;
+            --ink-soft: #4A5568;
+            --paper: #EEF1F4;
+            --card: #FFFFFF;
+            --line: #DCE2E8;
+            --green: #25714B;
+            --green-bg: #E7F3EC;
+            --amber: #A9660F;
+            --amber-bg: #FBF1DF;
+            --red: #A33628;
+            --red-bg: #FBEAE7;
+            --blue: #2C5B72;
+            --blue-bg: #E7EFF2;
+            --gray: #5B6672;
+            --gray-bg: #EBEDF0;
+            --brand-blue: #2563eb;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans);
+            background-color: var(--paper);
+            color: var(--ink);
+            line-height: 1.5;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Marca d'água de Fundo com a logo.png */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            background-image: url('logo.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.025;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px 80px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== 2. MASTHEAD / CABEÇALHO ===== */
+        .masthead {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-left: 6px solid var(--brand-blue);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .masthead-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .masthead-logo {
+            height: 48px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .masthead-title h1 {
+            font-family: var(--mono);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+
+        .masthead-title p {
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .masthead-meta {
+            text-align: right;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .masthead-meta b { color: var(--ink); }
+
+        /* ===== 3. KPIS DE TOPO (CONTADORES ANIMADOS) ===== */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .metric-number {
+            font-family: var(--mono);
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--ink);
+        }
+
+        .metric-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--ink-soft);
+            margin-top: 6px;
+        }
+
+        /* ===== 4. PAINEL DE ATENÇÃO DA DIRETORIA ===== */
+        .director-alert-section {
+            background: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            border-left: 6px solid var(--red);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+
+        .director-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--red);
+            font-family: var(--mono);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .director-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .alert-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 13px;
+        }
+
+        .alert-card.highlight {
+            border-color: #FCA5A5;
+            background: #FFF5F5;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            color: var(--red);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        /* ===== 5. TIMELINE DAS PRÓXIMAS VIRADAS ===== */
+        .timeline-section {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink-soft);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .timeline-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .timeline-client { font-weight: 700; font-size: 14px; color: var(--ink); }
+        .timeline-date { font-family: var(--mono); font-size: 13px; color: var(--brand-blue); font-weight: 600; margin-top: 2px; }
+        .timeline-countdown { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); margin-top: 6px; background: #E2E8F0; padding: 2px 6px; border-radius: 3px; display: inline-block; width: fit-content; }
+
+        /* ===== 6. VISUALIZAÇÃO GRÁFICA & CONTROLES ===== */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .analytics-grid { grid-template-columns: 1fr; }
+        }
+
+        .chart-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-container {
+            width: 220px;
+            height: 220px;
+            position: relative;
+        }
+
+        .chart-legend-text {
+            font-size: 11px;
+            color: var(--ink-soft);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* FILTROS E BUSCA */
+        .filters-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-group label {
+            font-size: 11px;
+            font-family: var(--mono);
+            font-weight: 600;
+            color: var(--ink-soft);
+            text-transform: uppercase;
+        }
+
+        .filter-control {
+            font-family: var(--sans);
+            font-size: 13px;
+            padding: 8px 12px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background-color: var(--paper);
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .filter-control:focus {
+            border-color: var(--brand-blue);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-top: 12px;
+            border-top: 1px solid var(--line);
+        }
+
+        .btn {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--line);
+            background: var(--paper);
+            color: var(--ink);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: #E2E8F0; }
+
+        /* ===== 7. CARDS DOS PROJETOS (ACORDEÃO EXPANSÍVEL) ===== */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .project-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .project-card:hover {
+            border-color: #CBD5E1;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+
+        .project-header-bar {
+            padding: 16px 20px;
+            background: var(--card);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            user-select: none;
+        }
+
+        .project-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .toggle-icon {
+            font-size: 12px;
+            color: var(--ink-soft);
+            transition: transform 0.3s ease;
+        }
+
+        .project-card.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .project-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .project-meta-pills {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ball {
+            font-family: var(--mono);
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .ball.cliente { background: var(--amber-bg); color: var(--amber); }
+        .ball.terceiro { background: var(--red-bg); color: var(--red); }
+        .ball.simus { background: var(--blue-bg); color: var(--blue); }
+        .ball.pausado { background: var(--gray-bg); color: var(--gray); }
+        .ball.virada { background: var(--ink); color: #fff; }
+
+        .project-summary-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            font-family: var(--mono);
+        }
+
+        .project-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+            background: var(--card);
+            border-top: 0px solid var(--line);
+        }
+
+        .project-card.expanded .project-body {
+            max-height: 2000px;
+            transition: max-height 0.6s ease-in-out;
+            border-top: 1px solid var(--line);
+            padding: 20px;
+        }
+
+        /* PROGRESS BAR INLINE */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .progress-bar-bg {
+            flex: 1;
+            background: var(--line);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--green);
+            width: 0%;
+            transition: width 0.8s ease-in-out;
+        }
+
+        .progress-text {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink-soft);
+            min-width: 48px;
+            text-align: right;
+        }
+
+        /* GRID DE INFORMAÇÕES INTERNAS */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .detail-box {
+            background: var(--paper);
+            border-radius: 6px;
+            padding: 14px 16px;
+            font-size: 13.5px;
+        }
+
+        .detail-box h4 {
+            font-family: var(--mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-soft);
+            margin-bottom: 8px;
+        }
+
+        .detail-box ul {
+            margin-left: 18px;
+        }
+
+        .detail-box li {
+            margin-bottom: 6px;
+        }
+
+        .risk-box {
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            background: var(--red-bg);
+            border-left: 4px solid var(--red);
+            color: var(--red);
+        }
+
+        .risk-box.none {
+            background: var(--green-bg);
+            border-left-color: var(--green);
+            color: var(--green);
+        }
+
+        /* ===== 8. COMPONENTES ESPECIAIS (EDUBRIX & CONCILIAÇÃO) ===== */
+        /* Esteira Edubrix */
+        .edubrix-pipeline {
+            margin-bottom: 16px;
+        }
+
+        .edubrix-multi-bar {
+            display: flex;
+            height: 24px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--line);
+            margin-bottom: 10px;
+        }
+
+        .edubrix-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFF;
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 700;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .edubrix-segment:hover { opacity: 0.85; }
+
+        .edubrix-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .edubrix-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        /* Carteira Conciliação */
+        .conciliacao-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .conciliacao-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .conciliacao-client-name {
+            font-weight: 700;
+            font-size: 13.5px;
+            color: var(--ink);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .conciliacao-status {
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        /* ===== 9. BOTÃO FLUTUANTE VOLTAR AO TOPO ===== */
+        .btn-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--ink);
+            color: #FFF;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+            z-index: 99;
+        }
+
+        .btn-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-top:hover {
+            transform: scale(1.08);
+        }
+
+        footer {
+            text-align: center;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink-soft);
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+        }
+
+        /* SUPORTE A REDUCED MOTION */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- CABEÇALHO DA EMPRESA E MARCA -->
+        <header class="masthead">
+            <div class="masthead-brand">
+                <img src="logo.png" alt="Simus ERP Logo" class="masthead-logo">
+                <div class="masthead-title">
+                    <h1>STATUS GERAL DOS PROJETOS</h1>
+                    <p>Dashboard Executivo &middot; Governança de Implantações</p>
+                </div>
+            </div>
+            <div class="masthead-meta">
+                Atualizado em <b>31/07/2026</b><br>
+                <span id="active-count-label">8 Iniciativas Monitoradas</span>
+            </div>
+        </header>
+
+        <!-- INDICADORES DE TOPO (KPIS COM ANIMAÇÃO) -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-number" id="kpi-total">0</div>
+                <div class="metric-label">Projetos Monitorados</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number" id="kpi-prazo" style="color: var(--green);">0</div>
+                <div class="metric-label">Dentro do Prazo</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number" id="kpi-atencao" style="color: var(--amber);">0</div>
+                <div class="metric-label">Em Atenção</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number" id="kpi-bloqueado" style="color: var(--red);">0</div>
+                <div class="metric-label">Bloqueados / Terceiros</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number" id="kpi-pausados" style="color: var(--gray);">0</div>
+                <div class="metric-label">Pausados</div>
+            </div>
+        </section>
+
+        <!-- ÁREA REQUER ATENÇÃO DA DIRETORIA -->
+        <section class="director-alert-section">
+            <div class="director-header">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>ATENÇÃO DA DIRETORIA &middot; BLOQUEIOS & RISCOS CRÍTICOS</span>
+            </div>
+            <div class="director-grid">
+                <div class="alert-card highlight">
+                    <div class="alert-title">
+                        <span>POS Controle</span>
+                        <span class="ball terceiro">Aguardando Terceiro</span>
+                    </div>
+                    <p style="margin-top: 4px;">
+                        Dependência crítica de retornos externos da <b>NDD</b> (SLA de 3 dias por CNPJ/Certificado) e retorno técnico do Frazzon (<b>Socin</b>) via chamado 82279.
+                    </p>
+                </div>
+                <div class="alert-card">
+                    <div class="alert-title">
+                        <span>Consultoria LOGVS</span>
+                        <span class="ball terceiro">Aguardando Agenda</span>
+                    </div>
+                    <p style="margin-top: 4px;">
+                        Insumos internos entregues 100%. Pauta estagnada aguardando definição de agenda pela LOGVS (impacta o destravamento da frente de Sucesso do Cliente).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIMELINE DAS PRÓXIMAS VIRADAS (COM CONTAGEM REGRESSIVA) -->
+        <section class="timeline-section">
+            <div class="section-title">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Timeline de Viradas Previstas (Go-Live)</span>
+            </div>
+            <div class="timeline-grid" id="timeline-container">
+                <!-- Inserido dinamicamente via JS -->
+            </div>
+        </section>
+
+        <!-- ANÁLISE GRÁFICA & PAINEL DE FILTROS -->
+        <section class="analytics-grid">
+            <!-- Gráfico de Rosca Interativo -->
+            <div class="chart-card">
+                <div class="section-title" style="margin-bottom: 10px;">Distribuição de Ação</div>
+                <div class="chart-container">
+                    <canvas id="donutChart"></canvas>
+                </div>
+                <p class="chart-legend-text">Clique em uma fatia para filtrar a lista</p>
+            </div>
+
+            <!-- Painel de Filtros e Busca -->
+            <div class="filters-card">
+                <div class="section-title"><i class="fa-solid fa-filter"></i> Filtros de Navegação</div>
+                
+                <div class="filter-row">
+                    <div class="filter-group" style="grid-column: span 2;">
+                        <label>Buscar por Nome do Projeto</label>
+                        <input type="text" id="search-input" class="filter-control" placeholder="Digite para filtrar...">
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Responsável Atual</label>
+                        <select id="filter-resp" class="filter-control">
+                            <option value="ALL">Todos os Responsáveis</option>
+                            <option value="Simus">Simus (Interno)</option>
+                            <option value="Cliente">Cliente</option>
+                            <option value="Terceiro">Terceiro / Parceiro</option>
+                            <option value="Pausado">Pausado</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Classificação de Risco</label>
+                        <select id="filter-risk" class="filter-control">
+                            <option value="ALL">Todos os Riscos</option>
+                            <option value="Nenhum">Nenhum Risco Crítico</option>
+                            <option value="Baixo">Baixo Risco</option>
+                            <option value="Médio">Médio Risco</option>
+                            <option value="Alto">Alto Risco</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Status do Projeto</label>
+                        <select id="filter-status" class="filter-control">
+                            <option value="ALL">Todos os Status</option>
+                            <option value="Em andamento">Em andamento</option>
+                            <option value="Em execução">Em execução</option>
+                            <option value="Aguardando">Aguardando</option>
+                            <option value="Pausado">Pausado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="toolbar-actions">
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn" id="btn-expand-all"><i class="fa-solid fa-angles-down"></i> Expandir Todos</button>
+                        <button class="btn" id="btn-collapse-all"><i class="fa-solid fa-angles-up"></i> Recolher Todos</button>
+                    </div>
+                    <button class="btn" id="btn-reset-filters" style="color: var(--red);"><i class="fa-solid fa-rotate-left"></i> Limpar Filtros</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- LISTA DE PROJETOS (COMPONENTES ACORDEÃO) -->
+        <main class="projects-list" id="projects-container">
+            <!-- Projetos gerados via JS -->
+        </main>
+
+        <footer>
+            RELATÓRIO EXECUTIVO DE PROJETOS &middot; SIMUS ERP &middot; 2026
+        </footer>
+
+    </div>
+
+    <!-- BOTÃO FLUTUANTE VOLTAR AO TOPO -->
+    <button class="btn-top" id="btn-back-to-top" title="Voltar ao topo">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- ===== JAVASCRIPT REESTRUTURADO E INTEGRAL ===== -->
+    <script>
+        // ===== DATA BASE DOS PROJETOS (ESTRUTURAÇÃO COMPLETA) =====
+        const projectsData = [
+            {
+                id: 'pao-dourado',
+                title: 'Implantação Pão Dourado',
+                actionResp: 'Simus',
+                viradaDate: '2026-08-20',
+                viradaLabel: '20/08/2026 (Container 3)',
+                progressPct: 31.7,
+                hoursConsumed: '124H',
+                status: 'Em andamento',
+                riskLevel: 'Baixo',
+                category: 'Simus',
+                summary: 'Go-Live confirmado para a nova unidade Container 3 (que não utiliza o sistema antigo). O mix de produtos foi validado pela cliente Elisangela sem alterações. O consultor Fábio (Simus) iniciou a inclusão dos dados na base vazia do Superus.',
+                nextSteps: [
+                    'Concluir a inclusão e carga dos cadastros na base vazia do Superus (Fábio).',
+                    'Avançar nas parametrizações operacionais do ERP e agendamento dos treinamentos.'
+                ],
+                completedSteps: [
+                    'Confirmadas as definições de funcionários inativos com Carlos.',
+                    'Mix de produtos do Container 3 validado por Elisangela (sem alterações).',
+                    'Infraestrutura de banco (DBSI), imagem Linux no concentrador E-conect (Skyone) e captura legada finalizadas.',
+                    'SPED dispensado (gerado externamente pela contabilidade via XML).'
+                ],
+                riskNote: 'Baixo risco — fase de carga inicial em andamento direto pela equipe Simus.',
+                extraInfo: 'Apoio técnico da autorizada Etitec.'
+            },
+            {
+                id: 'meu-atacado-jau',
+                title: 'Implantação Meu Atacado Jaú',
+                actionResp: 'Cliente',
+                viradaDate: '2026-08-24',
+                viradaLabel: '24/08/2026',
+                progressPct: 31.7,
+                hoursConsumed: '32,5H',
+                status: 'Em andamento',
+                riskLevel: 'Nenhum',
+                category: 'Cliente',
+                summary: 'Extração dos dados do sistema antigo concluída pelo consultor Fábio e disponibilizada ao cliente para conferência e validação prévia. Reunião de alinhamento técnico realizada e SPED anexado.',
+                nextSteps: [
+                    'Obter o aceite final do cliente referente aos dados disponibilizados do sistema antigo.',
+                    'Efetuar a carga definitiva dos cadastros validados no banco de dados do Superus.'
+                ],
+                completedSteps: [
+                    'Kick-off Simus + Meu Atacado Jaú realizado em 20/07.',
+                    'Formulário de requisitos preenchido por Felipe e Delton (TI do cliente).',
+                    'VPN Windows L2TP e banco de dados ERP instalados no servidor.'
+                ],
+                riskNote: 'Nenhum risco crítico — aguardando encerramento da conferência dos dados pelo cliente.',
+                extraInfo: 'Servidor ERP configurado e validado.'
+            },
+            {
+                id: 'smart-agroterra',
+                title: 'Implantação Smart Agroterra',
+                actionResp: 'Cliente',
+                viradaDate: '2026-09-30',
+                viradaLabel: 'Setembro/2026',
+                progressPct: 20.6,
+                hoursConsumed: 'Sem lançamento',
+                status: 'Em andamento',
+                riskLevel: 'Nenhum',
+                category: 'Cliente',
+                summary: 'O cliente Fidelis retornou os formulários e concedeu acesso ao banco antigo. O consultor Fábio concluiu a extração dos dados legados, que já foram disponibilizados ao cliente. O projeto aguarda a validação dos dados pelo cliente e agendamento de Kick-Off com a Skyone.',
+                nextSteps: [
+                    'Aguardar retorno do cliente referente à validação e aceite dos dados capturados.',
+                    'Realizar a reunião de Kick-off de infraestrutura na nuvem junto à Skyone.',
+                    'Efetuar a carga dos dados validados no banco de produção Superus.'
+                ],
+                completedSteps: [
+                    'Kick-off realizado e grupo no WhatsApp criado em 28/07.',
+                    'Formulários de requisitos e dados cadastrais preenchidos e devolvidos pelo Fidelis.',
+                    'Acesso concedido e extração de dados do banco antigo finalizada por Fábio.',
+                    'Dados disponibilizados ao cliente para conferência.',
+                    'SPED capturado para análise (gerado externamente pela contabilidade).'
+                ],
+                riskNote: 'Nenhum risco crítico — aguardando encerramento da conferência dos dados pelo cliente.',
+                extraInfo: 'Projeção de virada para Setembro/2026.'
+            },
+            {
+                id: 'pos-controle',
+                title: 'POS Controle',
+                actionResp: 'Terceiro',
+                viradaDate: null,
+                viradaLabel: 'A definir',
+                progressPct: null,
+                hoursConsumed: 'N/A',
+                status: 'Aguardando',
+                riskLevel: 'Alto',
+                category: 'Bloqueado',
+                summary: 'Contratação NDD realizada por cliente (exige envio de CNPJ e Certificado Digital, com SLA de resposta de 3 dias por solicitação). Na frente Socin, Lucas (Simus) aguarda retorno técnico do Frazzon e acompanhamento do Ticket 82279 com Leonardo.',
+                nextSteps: [
+                    'Acompanhar o prazo de 3 dias para cada solicitação enviada com CNPJ/Certificado à NDD.',
+                    'Obter retorno do Frazzon (Socin) via Lucas (Simus) e posicionamento do Ticket 82279 com Leonardo.'
+                ],
+                completedSteps: [
+                    'Kick-off e alinhamento de escopo executados.',
+                    'Solicitação de contratação comercial encaminhada à NDD por Danilo.',
+                    'Grupo de comunicação direta no WhatsApp ativado.'
+                ],
+                riskNote: 'Dependência de retornos externos da NDD e Socin.',
+                extraInfo: 'Acompanhamento diário da gestão.'
+            },
+            {
+                id: 'conciliacao-simus',
+                title: 'Conciliação Simus (EQUALS)',
+                actionResp: 'Simus',
+                viradaDate: null,
+                viradaLabel: 'Em transição',
+                progressPct: null,
+                hoursConsumed: 'N/A',
+                status: 'Em execução',
+                riskLevel: 'Baixo',
+                category: 'Simus',
+                summary: 'Parceria com a EQUALS estabelecida para assumir a operação. Três sessões de treinamento agendadas: 1ª Portal de Pedidos (06/08 às 9h), 2ª Treinamento na Plataforma (07/08 às 15h) e 3ª Matriz de Responsabilidade N1 (A definir).',
+                nextSteps: [
+                    'Conduzir as sessões de treinamento com a EQUALS nos dias 06/08 e 07/08.',
+                    'Acompanhar o preenchimento das planilhas das operadoras com os clientes em andamento.'
+                ],
+                completedSteps: [
+                    'EQUALS homologada como nova parceira.',
+                    'Agendamento oficial das sessões de treinamento.',
+                    'Cliente Botelho: Planilha devolvida preenchida, chamado aberto no BOA VISTA e instruções de operadoras enviadas para a responsável Sandra.'
+                ],
+                riskNote: 'Nenhum risco no processo de migração.',
+                isConciliacaoPortfolio: true,
+                conciliacaoClients: [
+                    { name: 'Botelho', status: 'Planilha preenchida / Chamado BOA VISTA OK / Instruções enviadas à Sandra' },
+                    { name: 'Piemon', status: 'Planilha encaminhada para preenchimento do cliente' },
+                    { name: 'Mercado DCM', status: 'Planilha encaminhada ao cliente (Contato via Vagner Raphanet)' },
+                    { name: 'Hzine', status: 'Planilha encaminhada para preenchimento do cliente' }
+                ]
+            },
+            {
+                id: 'edubrix',
+                title: 'Edubrix — Criação de Vídeos',
+                actionResp: 'Simus',
+                viradaDate: null,
+                viradaLabel: 'Esteira Contínua',
+                progressPct: 36.8, // 21 de 57
+                hoursConsumed: 'N/A',
+                status: 'Em execução',
+                riskLevel: 'Nenhum',
+                category: 'Simus',
+                summary: 'Esteira de criação de conteúdo com 21 de 57 materiais totalmente concluídos (36,8%). Governança sob liderança de Ederson com reuniões semanais fixas às quartas-feiras, às 11:00H.',
+                nextSteps: [
+                    'Acompanhar os 20 chamados em edição na produtora (SLA de 30 dias).',
+                    'Revisar e emitir parecer nos 9 roteiros pendentes de validação.',
+                    'Atuar na coleta das 7 demandas de insumos pendentes junto ao Suporte.'
+                ],
+                completedSteps: [
+                    'Volume de vídeos concluídos mantido em 21 materiais finalizados.',
+                    'Líder de Trilha (Ederson) definido e alinhado.',
+                    'Apresentação visual com imagens animadas e avatar corporativo aprovados.'
+                ],
+                riskNote: 'Nenhum risco crítico mapeado na esteira atual.',
+                isEdubrixPipeline: true,
+                edubrixCounts: {
+                    concluidos: 21,
+                    edicao: 20,
+                    validacao: 9,
+                    insumos: 7,
+                    total: 57
+                }
+            },
+            {
+                id: 'treinamento-etitec',
+                title: 'Treinamento Revenda ETITEC',
+                actionResp: 'Simus',
+                viradaDate: null,
+                viradaLabel: 'Capacitação Contínua',
+                progressPct: null,
+                hoursConsumed: 'Registrado no OTRS',
+                status: 'Em execução',
+                riskLevel: 'Baixo',
+                category: 'Simus',
+                summary: 'Chamado técnico de capacitação ativo no OTRS sob gerência de Lucas, mantendo ritmo padrão de 2 treinamentos por semana.',
+                nextSteps: [
+                    'Instalar o ambiente de testes dedicado para a nova autorizada ETITEC.',
+                    'Dar continuidade à grade curricular semanal de treinamentos.'
+                ],
+                completedSteps: [
+                    'Cadastro da autorizada no OTRS e chamado de capacitação aberto.',
+                    'Treinamentos iniciados com média mantida de 2 sessões semanais.'
+                ],
+                riskNote: 'Pendente instalação do ambiente de testes.',
+                extraInfo: 'Responsável: Lucas (Simus).'
+            },
+            {
+                id: 'consultoria-logvs',
+                title: 'Consultoria Comercial LOGVS',
+                actionResp: 'Terceiro',
+                viradaDate: null,
+                viradaLabel: 'Aguardando Agenda',
+                progressPct: 0,
+                hoursConsumed: 'N/A',
+                status: 'Aguardando',
+                riskLevel: 'Médio',
+                category: 'Terceiro',
+                summary: 'A Simus ERP disponibilizou integralmente todos os insumos operacionais e fluxogramas internos em 11/06. A pauta aguarda definição de agenda de reunião por parte da LOGVS.',
+                nextSteps: [
+                    'Aguardar definição de data para reunião de alinhamento com a equipe da LOGVS.'
+                ],
+                completedSteps: [
+                    'Envio do fluxograma interno, trilha de atendimento ao suporte e definição de cargos/ocupantes.'
+                ],
+                riskNote: 'Progresso estagnado no cronograma macro aguardando desdobramentos da consultoria.',
+                extraInfo: 'Insumos 100% entregues pela Simus.'
+            },
+            {
+                id: 'sucesso-cliente',
+                title: 'Sucesso do Cliente',
+                actionResp: 'Pausado',
+                viradaDate: null,
+                viradaLabel: 'Pausado',
+                progressPct: 0,
+                hoursConsumed: '0H',
+                status: 'Pausado',
+                riskLevel: 'Baixo',
+                category: 'Pausado',
+                summary: 'Iniciativa mantida oficialmente em pausa (0%), aguardando diretrizes e definições estratégicas decorrentes das ações da Consultoria Comercial LOGVS.',
+                nextSteps: [
+                    'Aguardar término do diagnóstico da consultoria LOGVS para retomada.'
+                ],
+                completedSteps: [],
+                riskNote: 'Sem atividade operacional no momento.',
+                extraInfo: 'Dependência direta da frente LOGVS.'
+            }
+        ];
+
+        // ===== VARIÁVEIS DE ESTADO GLOBAL =====
+        let donutChartInstance = null;
+        let selectedCategoryFilter = 'ALL';
+
+        // ===== INICIALIZAÇÃO DO DASHBOARD =====
+        document.addEventListener('DOMContentLoaded', () => {
+            initKPIs();
+            renderTimeline();
+            initChart();
+            renderProjects();
+            setupEventListeners();
+        });
+
+        // ===== 1. CONTAGEM ANIMADA DOS KPIS =====
+        function initKPIs() {
+            const total = projectsData.length;
+            const prazo = projectsData.filter(p => p.status === 'Em andamento' || p.status === 'Em execução').length;
+            const atencao = projectsData.filter(p => p.status === 'Aguardando' && p.category !== 'Bloqueado').length;
+            const bloqueado = projectsData.filter(p => p.category === 'Bloqueado' || p.riskLevel === 'Alto').length;
+            const pausados = projectsData.filter(p => p.status === 'Pausado').length;
+
+            animateValue('kpi-total', 0, total, 600);
+            animateValue('kpi-prazo', 0, prazo, 600);
+            animateValue('kpi-atencao', 0, atencao, 600);
+            animateValue('kpi-bloqueado', 0, bloqueado, 600);
+            animateValue('kpi-pausados', 0, pausados, 600);
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerText = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // ===== 2. RENDERIZAÇÃO DA TIMELINE E CONTAGEM REGRESSIVA =====
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+
+            const viradas = projectsData.filter(p => p.viradaDate || p.viradaLabel.includes('Setembro'));
+
+            viradas.forEach(item => {
+                let countdownText = 'Sem data exata';
+                if (item.viradaDate) {
+                    const today = new Date('2026-07-31T12:00:00');
+                    const target = new Date(item.viradaDate + 'T12:00:00');
+                    const diffDays = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+                    countdownText = diffDays > 0 ? `Faltam ${diffDays} dias` : 'Data atingida';
+                } else if (item.viradaLabel.includes('Setembro')) {
+                    countdownText = 'Faltam ~61 dias';
+                }
+
+                const card = document.createElement('div');
+                card.className = 'timeline-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="timeline-client">${item.title}</div>
+                        <div class="timeline-date"><i class="fa-solid fa-flag-checkered"></i> ${item.viradaLabel}</div>
+                    </div>
+                    <div class="timeline-countdown">${countdownText}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ===== 3. GRÁFICO DE ROSCA INTERATIVO (CHART.JS) =====
+        function initChart() {
+            const ctx = document.getElementById('donutChart').getContext('2d');
+
+            const counts = {
+                Simus: projectsData.filter(p => p.category === 'Simus').length,
+                Cliente: projectsData.filter(p => p.category === 'Cliente').length,
+                Terceiro: projectsData.filter(p => p.category === 'Terceiro').length,
+                Bloqueado: projectsData.filter(p => p.category === 'Bloqueado').length,
+                Pausado: projectsData.filter(p => p.category === 'Pausado').length
+            };
+
+            donutChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Simus', 'Cliente', 'Terceiro', 'Bloqueado', 'Pausado'],
+                    datasets: [{
+                        data: [counts.Simus, counts.Cliente, counts.Terceiro, counts.Bloqueado, counts.Pausado],
+                        backgroundColor: ['#2C5B72', '#A9660F', '#6C757D', '#A33628', '#5B6672'],
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} projeto(s)`;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (evt, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const label = donutChartInstance.data.labels[index];
+                            selectedCategoryFilter = (selectedCategoryFilter === label) ? 'ALL' : label;
+                            document.getElementById('filter-resp').value = selectedCategoryFilter;
+                            renderProjects();
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== 4. RENDERIZAÇÃO E FILTRAGEM DOS CARDS ACORDEÃO =====
+        function renderProjects() {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
+
+            const searchValue = document.getElementById('search-input').value.toLowerCase();
+            const respValue = document.getElementById('filter-resp').value;
+            const riskValue = document.getElementById('filter-risk').value;
+            const statusValue = document.getElementById('filter-status').value;
+
+            const filtered = projectsData.filter(p => {
+                const matchSearch = p.title.toLowerCase().includes(searchValue);
+                const matchResp = (respValue === 'ALL') || (p.category === respValue) || (p.actionResp === respValue);
+                const matchRisk = (riskValue === 'ALL') || (p.riskLevel === riskValue);
+                const matchStatus = (statusValue === 'ALL') || (p.status === statusValue);
+
+                return matchSearch && matchResp && matchRisk && matchStatus;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; color: var(--ink-soft);">
+                        <i class="fa-solid fa-folder-open" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
+                        Nenhum projeto encontrado com os filtros selecionados.
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.id = `card-${p.id}`;
+
+                // Classe da tag de ação
+                let ballClass = 'simus';
+                if (p.actionResp === 'Cliente') ballClass = 'cliente';
+                else if (p.actionResp === 'Terceiro') ballClass = 'terceiro';
+                else if (p.actionResp === 'Pausado') ballClass = 'pausado';
+
+                // Classe do Risco
+                let riskClass = 'none';
+                if (p.riskLevel === 'Médio') riskClass = 'medium';
+                else if (p.riskLevel === 'Alto') riskClass = 'high';
+
+                // Render de componentes específicos (Edubrix / Conciliação)
+                let customComponentHTML = '';
+                if (p.isEdubrixPipeline) {
+                    customComponentHTML = `
+                        <div class="edubrix-pipeline">
+                            <div class="edubrix-multi-bar">
+                                <div class="edubrix-segment" style="width: 36.8%; background: var(--green);" title="Concluídos (21)">21</div>
+                                <div class="edubrix-segment" style="width: 35.1%; background: var(--blue);" title="Em Edição (20)">20</div>
+                                <div class="edubrix-segment" style="width: 15.8%; background: var(--amber);" title="Pendente Validação (9)">9</div>
+                                <div class="edubrix-segment" style="width: 12.3%; background: var(--gray);" title="No Suporte (7)">7</div>
+                            </div>
+                            <div class="edubrix-legend">
+                                <div class="edubrix-legend-item"><span class="legend-dot" style="background: var(--green);"></span> 21 Concluídos (36,8%)</div>
+                                <div class="edubrix-legend-item"><span class="legend-dot" style="background: var(--blue);"></span> 20 Em Edição Ativa</div>
+                                <div class="edubrix-legend-item"><span class="legend-dot" style="background: var(--amber);"></span> 9 Aguardando Validação</div>
+                                <div class="edubrix-legend-item"><span class="legend-dot" style="background: var(--gray);"></span> 7 Insumos no Suporte</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (p.isConciliacaoPortfolio) {
+                    let clientCards = p.conciliacaoClients.map(c => `
+                        <div class="conciliacao-card">
+                            <div class="conciliacao-client-name">
+                                <span>${c.name}</span>
+                                <i class="fa-solid fa-circle-check" style="color: var(--green);"></i>
+                            </div>
+                            <div class="conciliacao-status">${c.status}</div>
+                        </div>
+                    `).join('');
+
+                    customComponentHTML = `
+                        <div style="margin-bottom: 16px;">
+                            <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px;">Carteira de Clientes no Conciliação</h4>
+                            <div class="conciliacao-grid">${clientCards}</div>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="project-header-bar" onclick="toggleCard('${p.id}')">
+                        <div class="project-header-left">
+                            <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                            <span class="project-title">${p.title}</span>
+                            <div class="project-meta-pills">
+                                <span class="ball ${ballClass}">Ação: ${p.actionResp}</span>
+                                ${p.viradaLabel ? `<span class="ball virada"><i class="fa-solid fa-flag-checkered"></i> ${p.viradaLabel}</span>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="project-summary-info">
+                            ${p.progressPct !== null ? `<span><b>${p.progressPct}%</b> concluído</span>` : ''}
+                            <span>Horas: <b>${p.hoursConsumed}</b></span>
+                            <span>Risco: <b>${p.riskLevel}</b></span>
+                        </div>
+                    </div>
+
+                    <div class="project-body">
+                        ${p.progressPct !== null ? `
+                            <div class="progress-container">
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: ${p.progressPct}%;"></div>
+                                </div>
+                                <span class="progress-text">${p.progressPct}%</span>
+                            </div>
+                        ` : ''}
+
+                        ${customComponentHTML}
+
+                        <div class="details-grid">
+                            <div class="detail-box">
+                                <h4>Resumo Executivo</h4>
+                                <p>${p.summary}</p>
+                            </div>
+
+                            <div class="detail-box">
+                                <h4>Próximos Passos</h4>
+                                <ul>${p.nextSteps.map(step => `<li>${step}</li>`).join('')}</ul>
+                            </div>
+
+                            <div class="detail-box">
+                                <h4>Etapas Concluídas</h4>
+                                <ul>${p.completedSteps.length > 0 ? p.completedSteps.map(step => `<li><b>OK:</b> ${step}</li>`).join('') : '<li>Início recente / Sem etapas anteriores</li>'}</ul>
+                            </div>
+
+                            <div class="detail-box">
+                                <h4>Mapeamento de Riscos & Notas</h4>
+                                <div class="risk-box ${p.riskLevel === 'Nenhum' ? 'none' : ''}">
+                                    ${p.riskNote}
+                                </div>
+                                ${p.extraInfo ? `<p style="margin-top: 8px; font-size: 12px; color: var(--ink-soft);"><b>Info:</b> ${p.extraInfo}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // ===== 5. INTERATIVIDADE E EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Filtros de input/select
+            document.getElementById('search-input').addEventListener('input', renderProjects);
+            document.getElementById('filter-resp').addEventListener('change', (e) => {
+                selectedCategoryFilter = e.target.value;
+                renderProjects();
+            });
+            document.getElementById('filter-risk').addEventListener('change', renderProjects);
+            document.getElementById('filter-status').addEventListener('change', renderProjects);
+
+            // Botões Expandir / Recolher todos
+            document.getElementById('btn-expand-all').addEventListener('click', () => {
+                document.querySelectorAll('.project-card').forEach(c => c.classList.add('expanded'));
+            });
+
+            document.getElementById('btn-collapse-all').addEventListener('click', () => {
+                document.querySelectorAll('.project-card').forEach(c => c.classList.remove('expanded'));
+            });
+
+            // Limpar Filtros
+            document.getElementById('btn-reset-filters').addEventListener('click', () => {
+                document.getElementById('search-input').value = '';
+                document.getElementById('filter-resp').value = 'ALL';
+                document.getElementById('filter-risk').value = 'ALL';
+                document.getElementById('filter-status').value = 'ALL';
+                selectedCategoryFilter = 'ALL';
+                renderProjects();
+            });
+
+            // Botão Voltar ao Topo
+            const btnTop = document.getElementById('btn-back-to-top');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    btnTop.classList.add('visible');
+                } else {
+                    btnTop.classList.remove('visible');
+                }
+            });
+
+            btnTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // Alternar expansão do Acordeão
+        function toggleCard(id) {
+            const card = document.getElementById(`card-${id}`);
+            if (card) {
+                card.classList.toggle('expanded');
+            }
+        }
+    </script>
+</body>
+</html>
