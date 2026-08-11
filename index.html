@@ -687,7 +687,7 @@
                 </div>
             </div>
             <div class="masthead-meta">
-                Atualizado em <b>31/07/2026</b><br>
+                Atualizado em <b>11/08/2026</b><br>
                 <span id="active-count-label">8 Iniciativas Monitoradas</span>
             </div>
         </header>
@@ -729,7 +729,7 @@
                         <span class="ball terceiro">Aguardando Terceiro</span>
                     </div>
                     <p style="margin-top: 4px;">
-                        Dependência crítica de retornos externos da <b>NDD</b> (SLA de 3 dias por CNPJ/Certificado) e retorno técnico do Frazzon (<b>Socin</b>) via chamado 82279.
+                        Dependência de retornos externos da <b>NDD</b> (SLA de 3 dias por CNPJ/Certificado) e retorno técnico do Frazzon (<b>Socin</b>). Reunião de alinhamento com a Socin confirmada para 13/08.
                     </p>
                 </div>
                 <div class="alert-card">
@@ -848,75 +848,76 @@
                 actionResp: 'Simus',
                 viradaDate: '2026-08-20',
                 viradaLabel: '20/08/2026 (Container 3)',
-                progressPct: 31.7,
-                hoursConsumed: '124H',
+                progressPct: 34.9,
+                hoursConsumed: '129H',
                 status: 'Em andamento',
                 riskLevel: 'Baixo',
                 category: 'Simus',
-                summary: 'Go-Live confirmado para a nova unidade Container 3 (que não utiliza o sistema antigo). O mix de produtos foi validado pela cliente Elisangela sem alterações. O consultor Fábio (Simus) iniciou a inclusão dos dados na base vazia do Superus.',
+                summary: 'Treinamentos operacionais focados na equipe da nova loja (Container 3) foram iniciados. O mix de produtos foi validado pela cliente Elisangela sem alterações. O consultor Fábio (Simus) concluiu integralmente a inclusão dos dados na base vazia do Superus.',
                 nextSteps: [
-                    'Concluir a inclusão e carga dos cadastros na base vazia do Superus (Fábio).',
-                    'Avançar nas parametrizações operacionais do ERP e agendamento dos treinamentos.'
+                    'Avançar com a grade de treinamentos operacionais focados no Cadastro de Produtos para a Container 3.',
+                    'Finalizar as parametrizações operacionais do ERP e testes do concentrador de loja.'
                 ],
                 completedSteps: [
-                    'Confirmadas as definições de funcionários inativos com Carlos.',
+                    'Início das sessões de treinamentos (usuários, permissões e grupos) a partir de 04/08.',
+                    'Carga e inclusão dos cadastros e produtos no ambiente de produção vazia concluída.',
                     'Mix de produtos do Container 3 validado por Elisangela (sem alterações).',
-                    'Infraestrutura de banco (DBSI), imagem Linux no concentrador E-conect (Skyone) e captura legada finalizadas.',
-                    'SPED dispensado (gerado externamente pela contabilidade via XML).'
+                    'Infraestrutura de banco (DBSI), imagem Linux no concentrador E-conect (Skyone) e captura legada finalizadas.'
                 ],
-                riskNote: 'Baixo risco — fase de carga inicial em andamento direto pela equipe Simus.',
-                extraInfo: 'Apoio técnico da autorizada Etitec.'
+                riskNote: 'Baixo risco — equipe focada na conclusão dos treinamentos para assegurar a virada.',
+                extraInfo: 'A loja Container 3 é uma unidade nova e não possui histórico legado.'
             },
             {
                 id: 'meu-atacado-jau',
                 title: 'Implantação Meu Atacado Jaú',
-                actionResp: 'Cliente',
+                actionResp: 'Simus',
                 viradaDate: '2026-08-24',
                 viradaLabel: '24/08/2026',
-                progressPct: 31.7,
+                progressPct: 33.3,
                 hoursConsumed: '32,5H',
                 status: 'Em andamento',
                 riskLevel: 'Nenhum',
-                category: 'Cliente',
-                summary: 'Extração dos dados do sistema antigo concluída pelo consultor Fábio e disponibilizada ao cliente para conferência e validação prévia. Reunião de alinhamento técnico realizada e SPED anexado.',
+                category: 'Simus',
+                summary: 'O processo de validação dos dados capturados do sistema antigo foi concluído com sucesso sob a liderança do responsável Dirceu (Cliente). Com a homologação finalizada, os treinamentos foram iniciados.',
                 nextSteps: [
-                    'Obter o aceite final do cliente referente aos dados disponibilizados do sistema antigo.',
-                    'Efetuar a carga definitiva dos cadastros validados no banco de dados do Superus.'
+                    'Dar continuidade à grade de treinamentos focados na operação da loja.',
+                    'Efetuar a importação oficial dos cadastros validados no banco de dados do Superus.',
+                    'Instalar e parametrizar o Simplificação e Concentradores de Vendas.'
                 ],
                 completedSteps: [
-                    'Kick-off Simus + Meu Atacado Jaú realizado em 20/07.',
-                    'Formulário de requisitos preenchido por Felipe e Delton (TI do cliente).',
-                    'VPN Windows L2TP e banco de dados ERP instalados no servidor.'
+                    'Validação e conferência dos dados legados concluída pelo cliente (Dirceu).',
+                    'Início dos treinamentos (cadastros, permissões e grupos) em 11/08.',
+                    'Reunião de alinhamento técnico realizada e SPED anexado.',
+                    'VPN Windows L2TP e banco de dados ERP instalados no servidor do cliente.'
                 ],
-                riskNote: 'Nenhum risco crítico — aguardando encerramento da conferência dos dados pelo cliente.',
-                extraInfo: 'Servidor ERP configurado e validado.'
+                riskNote: 'Nenhum risco crítico — cronograma fluindo conforme validações entregues.',
+                extraInfo: 'Servidor ERP configurado com rotinas de backup diárias em funcionamento.'
             },
             {
                 id: 'smart-agroterra',
                 title: 'Implantação Smart Agroterra',
-                actionResp: 'Cliente',
-                viradaDate: '2026-09-30',
-                viradaLabel: 'Setembro/2026',
-                progressPct: 20.6,
-                hoursConsumed: 'Sem lançamento',
+                actionResp: 'Simus',
+                viradaDate: '2026-09-16',
+                viradaLabel: '16/09/2026',
+                progressPct: 27.0,
+                hoursConsumed: '19,5H',
                 status: 'Em andamento',
                 riskLevel: 'Nenhum',
-                category: 'Cliente',
-                summary: 'O cliente Fidelis retornou os formulários e concedeu acesso ao banco antigo. O consultor Fábio concluiu a extração dos dados legados, que já foram disponibilizados ao cliente. O projeto aguarda a validação dos dados pelo cliente e agendamento de Kick-Off com a Skyone.',
+                category: 'Simus',
+                summary: 'O cliente concluiu a validação dos dados legados extraídos. A Reunião de Kick-Off com a parceira Skyone foi realizada com sucesso, e o consultor Christian (Simus) iniciou a preparação técnica do ambiente do cliente.',
                 nextSteps: [
-                    'Aguardar retorno do cliente referente à validação e aceite dos dados capturados.',
-                    'Realizar a reunião de Kick-off de infraestrutura na nuvem junto à Skyone.',
-                    'Efetuar a carga dos dados validados no banco de produção Superus.'
+                    'Avançar na estruturação do ambiente de produção e nuvem sob a liderança do Christian.',
+                    'Executar a carga oficial dos dados validados no banco Superus.',
+                    'Definir o cronograma de treinamentos operacionais com o cliente.'
                 ],
                 completedSteps: [
-                    'Kick-off realizado e grupo no WhatsApp criado em 28/07.',
-                    'Formulários de requisitos e dados cadastrais preenchidos e devolvidos pelo Fidelis.',
-                    'Acesso concedido e extração de dados do banco antigo finalizada por Fábio.',
-                    'Dados disponibilizados ao cliente para conferência.',
+                    'Validação dos dados antigos concluída pelo cliente Fidelis.',
+                    'Reunião de Kick-Off de infraestrutura em nuvem com a Skyone realizada.',
+                    'Formulários de requisitos e dados cadastrais preenchidos e devolvidos.',
                     'SPED capturado para análise (gerado externamente pela contabilidade).'
                 ],
-                riskNote: 'Nenhum risco crítico — aguardando encerramento da conferência dos dados pelo cliente.',
-                extraInfo: 'Projeção de virada para Setembro/2026.'
+                riskNote: 'Nenhum risco crítico mapeado.',
+                extraInfo: 'Previsão de virada estabelecida pelo cliente para 16/09.'
             },
             {
                 id: 'pos-controle',
@@ -929,18 +930,18 @@
                 status: 'Aguardando',
                 riskLevel: 'Alto',
                 category: 'Bloqueado',
-                summary: 'Contratação NDD realizada por cliente (exige envio de CNPJ e Certificado Digital, com SLA de resposta de 3 dias por solicitação). Na frente Socin, Lucas (Simus) aguarda retorno técnico do Frazzon e acompanhamento do Ticket 82279 com Leonardo.',
+                summary: 'A contratação da NDD foi enviada e exige envio de CNPJ e Certificado Digital (SLA de resposta de 3 dias). Na frente Socin, após acionamentos do Lucas (Simus), o retorno do Frazzon foi recebido e uma reunião técnica foi agendada.',
                 nextSteps: [
-                    'Acompanhar o prazo de 3 dias para cada solicitação enviada com CNPJ/Certificado à NDD.',
-                    'Obter retorno do Frazzon (Socin) via Lucas (Simus) e posicionamento do Ticket 82279 com Leonardo.'
+                    'Realizar a reunião de alinhamento com a Socin no dia 13/08.',
+                    'Acompanhar o prazo das solicitações enviadas com CNPJ/Certificado à NDD.'
                 ],
                 completedSteps: [
+                    'Retorno do Frazzon (Socin) obtido e reunião técnica confirmada.',
                     'Kick-off e alinhamento de escopo executados.',
-                    'Solicitação de contratação comercial encaminhada à NDD por Danilo.',
-                    'Grupo de comunicação direta no WhatsApp ativado.'
+                    'Solicitação de contratação comercial encaminhada à NDD por Danilo.'
                 ],
-                riskNote: 'Dependência de retornos externos da NDD e Socin.',
-                extraInfo: 'Acompanhamento diário da gestão.'
+                riskNote: 'Dependência contínua de retornos externos da NDD e Socin.',
+                extraInfo: 'Reunião estratégica agendada para destravamento do ticket 82279.'
             },
             {
                 id: 'conciliacao-simus',
@@ -953,22 +954,22 @@
                 status: 'Em execução',
                 riskLevel: 'Baixo',
                 category: 'Simus',
-                summary: 'Parceria com a EQUALS estabelecida para assumir a operação. Três sessões de treinamento agendadas: 1ª Portal de Pedidos (06/08 às 9h), 2ª Treinamento na Plataforma (07/08 às 15h) e 3ª Matriz de Responsabilidade N1 (A definir).',
+                summary: 'A transição para a nova parceira EQUALS avançou com a conclusão das primeiras sessões de capacitação da equipe Simus. Os clientes iniciais já estão recebendo acessos ao novo portal para configuração.',
                 nextSteps: [
-                    'Conduzir as sessões de treinamento com a EQUALS nos dias 06/08 e 07/08.',
-                    'Acompanhar o preenchimento das planilhas das operadoras com os clientes em andamento.'
+                    'Conduzir a 3ª sessão de treinamento de Matriz de Responsabilidade (N1) agendada para 14/08 às 09:00.',
+                    'Acompanhar a configuração de operadoras ativas pelos clientes no portal Equals.'
                 ],
                 completedSteps: [
-                    'EQUALS homologada como nova parceira.',
-                    'Agendamento oficial das sessões de treinamento.',
-                    'Cliente Botelho: Planilha devolvida preenchida, chamado aberto no BOA VISTA e instruções de operadoras enviadas para a responsável Sandra.'
+                    '1ª e 2ª sessões de treinamentos da equipe Simus na plataforma realizadas com sucesso (06/08 e 07/08).',
+                    'Clientes Piemon e Mercado DCM com cadastro e acessos liberados no portal Equals.',
+                    'Cliente Botelho: Planilha preenchida, chamado BOA VISTA concluído e instruções de operadoras enviadas.'
                 ],
-                riskNote: 'Nenhum risco no processo de migração.',
+                riskNote: 'Nenhum risco — processo de migração e cadastro de contas seguindo conforme o planejado.',
                 isConciliacaoPortfolio: true,
                 conciliacaoClients: [
-                    { name: 'Botelho', status: 'Planilha preenchida / Chamado BOA VISTA OK / Instruções enviadas à Sandra' },
-                    { name: 'Piemon', status: 'Planilha encaminhada para preenchimento do cliente' },
-                    { name: 'Mercado DCM', status: 'Planilha encaminhada ao cliente (Contato via Vagner Raphanet)' },
+                    { name: 'Botelho', status: 'Planilha OK / BOA VISTA OK / Instruções enviadas à Sandra' },
+                    { name: 'Piemon', status: 'Acesso Portal Equals Liberado / Configurando Operadoras' },
+                    { name: 'Mercado DCM', status: 'Acesso Portal Equals Liberado / Configurando Operadoras' },
                     { name: 'Hzine', status: 'Planilha encaminhada para preenchimento do cliente' }
                 ]
             },
@@ -1122,12 +1123,12 @@
             viradas.forEach(item => {
                 let countdownText = 'Sem data exata';
                 if (item.viradaDate) {
-                    const today = new Date('2026-07-31T12:00:00');
+                    const today = new Date('2026-08-11T12:00:00');
                     const target = new Date(item.viradaDate + 'T12:00:00');
                     const diffDays = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
                     countdownText = diffDays > 0 ? `Faltam ${diffDays} dias` : 'Data atingida';
                 } else if (item.viradaLabel.includes('Setembro')) {
-                    countdownText = 'Faltam ~61 dias';
+                    countdownText = 'Faltam ~36 dias';
                 }
 
                 const card = document.createElement('div');
